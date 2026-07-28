@@ -1,10 +1,10 @@
 FROM n8nio/n8n:latest
 
+# 1. Cambiar temporalmente a root para instalar herramientas del sistema
 USER root
 
-# Instalar FFmpeg a nivel de sistema
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
+# 2. Instalar FFmpeg usando el gestor nativo de la imagen (Alpine)
+RUN apk add --no-cache ffmpeg
 
+# 3. Volver al usuario no privilegiado que usa n8n por seguridad
 USER node
