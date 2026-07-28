@@ -2,14 +2,17 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Instalar FFmpeg usando apt-get (compatible con la imagen actual de n8n)
+# 1. Instalar FFmpeg en Debian
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y --no-install-recommends ffmpeg && \
     rm -rf /var/lib/apt/lists/*
+
+# 2. Crear el directorio de nodos de la comunidad y asignar permisos al usuario node
+RUN mkdir -p /home/node/.n8n/custom && \
+    chown -R node:node /home/node/.n8n
 
 USER node
 
-# Preinstalar el nodo de la comunidad
-RUN mkdir -p /home/node/.n8n/custom \
-    && cd /home/node/.n8n/custom \
-    && npm install n8n-nodes-ffmpeg
+# 3. Instalar el nodo de la comunidad como usuario node
+WORKDIR /home/node/.n8n/custom
+RUN npm install n8n-nodes-ffmpeg
